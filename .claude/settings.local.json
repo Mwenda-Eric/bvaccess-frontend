@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s /b \"C:\\\\Ric\\\\Equus\\\\bvaccess-frontend\\\\src\")",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npx tsc:*)",
+      "Bash(\"C:\\\\Ric\\\\Equus\\\\bvaccess-frontend\\\\src\\\\app\\\\api\\\\auth\\\\[...nextauth]\\\\route.ts\")",
+      "Bash(echo:*)",
+      "Bash(ls:*)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(git restore:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Complete BVAccess frontend implementation\n\n- Dashboard with real-time stats, revenue charts, and analytics\n- Operators management \\(CRUD with password validation\\)\n- Locations management with location codes\n- Vouchers listing with filters and void functionality  \n- Daily and period reports with export options\n- Authentication with NextAuth.js\n- Internationalization \\(English/French\\)\n- Dark/Light theme support\n- Optimized refresh intervals \\(5-10s\\) for Azure cost efficiency\n- Fixed API integrations with .NET backend \\(PascalCase support\\)\n- shadcn/ui components and Tailwind CSS styling\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(dir /s \"C:\\\\Ric\\\\Equus\\\\bvaccess-frontend\")"
+    ]
+  }
+}
