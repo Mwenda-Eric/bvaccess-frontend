@@ -73,7 +73,8 @@ export function useRecentVouchers(limit: number = 10) {
     queryKey: ['dashboard', 'recent-vouchers', limit],
     queryFn: () => dashboardApi.getRecentVouchers(limit),
     placeholderData: keepPreviousData,
-    staleTime: 30 * 1000,
+    staleTime: 0, // Always refetch to get latest vouchers
+    refetchOnMount: 'always',
   });
 }
 

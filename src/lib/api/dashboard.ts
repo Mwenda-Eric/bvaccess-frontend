@@ -89,12 +89,18 @@ export const dashboardApi = {
 
   // Get recent vouchers (from vouchers list with small page size)
   getRecentVouchers: async (limit: number = 10): Promise<RecentVoucher[]> => {
+    console.log('[Dashboard API] Fetching recent vouchers with limit:', limit);
     const result = await get<{ items: RecentVoucher[] }>('/admin/vouchers', {
       pageSize: limit,
       sortBy: 'createdAt',
       sortOrder: 'desc'
     });
-    return result.items;
+    console.log('[Dashboard API] Recent vouchers response:', {
+      itemCount: result.items?.length,
+      firstItem: result.items?.[0],
+      items: result.items,
+    });
+    return result.items || [];
   },
 
   // Get active operators count (calculated from operators list)

@@ -14,7 +14,15 @@ export const vouchersApi = {
   getList: async (
     params?: PaginationParams & VoucherFilters
   ): Promise<PaginatedResponse<Voucher>> => {
-    return get<PaginatedResponse<Voucher>>('/admin/vouchers', params as Record<string, unknown>);
+    console.log('[Vouchers API] Fetching vouchers with params:', params);
+    const result = await get<PaginatedResponse<Voucher>>('/admin/vouchers', params as Record<string, unknown>);
+    console.log('[Vouchers API] Vouchers response:', {
+      totalCount: result.pagination?.totalCount,
+      itemCount: result.items?.length,
+      firstItem: result.items?.[0],
+      pagination: result.pagination,
+    });
+    return result;
   },
 
   // Get single voucher by ID

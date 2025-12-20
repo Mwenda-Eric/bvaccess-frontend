@@ -12,7 +12,8 @@ export function useVouchers(params?: PaginationParams & VoucherFilters) {
     queryKey: ['vouchers', params],
     queryFn: () => vouchersApi.getList(params),
     placeholderData: keepPreviousData,
-    staleTime: 30 * 1000,
+    staleTime: 0, // Always refetch to get latest vouchers
+    refetchOnMount: 'always', // Refetch when component mounts
   });
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Download, FileSpreadsheet, FileDown } from 'lucide-react';
+import { Download, FileSpreadsheet, FileDown, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { VoucherFilters, VouchersTable, VoidVoucherDialog } from '@/components/vouchers';
-import { useVouchers, useVoidVoucher, useExportVouchers } from '@/hooks';
+import { useVouchers, useVoidVoucher, useExportVouchers, useRefreshVouchers } from '@/hooks';
 import { Voucher, VoucherFilters as VoucherFiltersType } from '@/types';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants';
 
@@ -20,9 +20,10 @@ export default function VouchersPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [voidDialogOpen, setVoidDialogOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch vouchers - sorted by most recent first
-  const { data, isLoading } = useVouchers({
+  const { data, isLoading, isFetching } = useVouchers({
     page,
     pageSize,
     sortBy: 'createdAt',
@@ -30,9 +31,18 @@ export default function VouchersPage() {
     ...filters,
   });
 
-  // Mutations
+  // Mutations and refresh
   const voidVoucher = useVoidVoucher();
   const exportVouchers = useExportVouchers();
+  const refreshVouchers = useRefreshVouchers();
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    refreshVouchers();
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
+
+  const isAnyFetching = isFetching || isRefreshing;
 
   const handleVoidClick = (voucher: Voucher) => {
     setSelectedVoucher(voucher);
@@ -77,8 +87,20 @@ export default function VouchersPage() {
           </p>
         </div>
 
-        {/* Export Button */}
-        <DropdownMenu>
+        <div className="flex gap-2">
+          {/* Refresh Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isAnyFetching}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isAnyFetching ? 'animate-spin' : ''}`} />
+            {isAnyFetching ? 'Refreshing...' : 'Refresh'}
+          </Button>
+
+          {/* Export Button */}
+          <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
@@ -95,7 +117,8 @@ export default function VouchersPage() {
               Export as Excel
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Filters */}
