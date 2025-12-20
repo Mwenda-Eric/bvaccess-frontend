@@ -1,23 +1,29 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { vouchersApi } from '@/lib/api';
 import { VoucherFilters, PaginationParams } from '@/types';
 import { formatApiError } from '@/lib/api/client';
 import { toast } from 'sonner';
-
-// Auto-refresh interval in milliseconds
-// Using 10 seconds to balance freshness vs Azure costs
-const REFRESH_INTERVAL = 10 * 1000;
+import { useCallback } from 'react';
 
 export function useVouchers(params?: PaginationParams & VoucherFilters) {
   return useQuery({
     queryKey: ['vouchers', params],
     queryFn: () => vouchersApi.getList(params),
-    placeholderData: (previousData) => previousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
   });
+}
+
+export function useRefreshVouchers() {
+  const queryClient = useQueryClient();
+
+  const refresh = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['vouchers'] });
+  }, [queryClient]);
+
+  return refresh;
 }
 
 export function useVoucher(id: string) {

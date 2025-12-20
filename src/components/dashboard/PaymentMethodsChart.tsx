@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,13 +39,6 @@ const ICON_MAP: Record<string, typeof Banknote> = {
 };
 
 export function PaymentMethodsChart({ data, loading = false }: PaymentMethodsChartProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[PaymentMethodsChart] Received data:', data);
-    }
-  }, [data]);
-
   if (loading) {
     return (
       <Card>
@@ -109,6 +101,7 @@ export function PaymentMethodsChart({ data, loading = false }: PaymentMethodsCha
                 outerRadius={65}
                 paddingAngle={5}
                 dataKey="value"
+                isAnimationActive={false}
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${entry.method}`} fill={COLOR_MAP[entry.method] || FALLBACK_COLORS[index % FALLBACK_COLORS.length]} />

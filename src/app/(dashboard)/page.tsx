@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { format } from 'date-fns';
 import {
   DollarSign,
   Ticket,
   Users,
   TrendingUp,
+  RefreshCw,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   StatCard,
   RevenueChart,
@@ -30,17 +30,19 @@ import {
   useTopOperators,
   useRecentVouchers,
   useActiveOperators,
+  useRefreshDashboard,
 } from '@/hooks';
 import { formatCurrency } from '@/lib/utils';
 import { ChartPeriod } from '@/types';
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
   const t = useTranslations('dashboard');
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('7d');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const refreshDashboard = useRefreshDashboard();
 
   // Fetch dashboard data
-  const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
+  const { data: summary, isLoading: summaryLoading, isFetching: summaryFetching } = useDashboardSummary();
   const { data: revenueChart, isLoading: revenueLoading } = useRevenueChart(chartPeriod);
   const { data: locationData, isLoading: locationLoading } = useSalesByLocation(chartPeriod);
   const { data: durationData, isLoading: durationLoading } = useSalesByDuration(chartPeriod);
@@ -49,6 +51,15 @@ export default function DashboardPage() {
   const { data: topOperators, isLoading: operatorsLoading } = useTopOperators(5);
   const { data: recentVouchers, isLoading: vouchersLoading } = useRecentVouchers(10);
   const { data: activeOps, isLoading: activeOpsLoading } = useActiveOperators();
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    refreshDashboard();
+    // Wait a moment for queries to start fetching
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
+
+  const isAnyFetching = summaryFetching || isRefreshing;
 
   return (
     <div className="space-y-6">
@@ -62,6 +73,15 @@ export default function DashboardPage() {
             {t('subtitle')}
           </p>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isAnyFetching}
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${isAnyFetching ? 'animate-spin' : ''}`} />
+          {isAnyFetching ? 'Refreshing...' : 'Refresh'}
+        </Button>
       </div>
 
       {/* Stat Cards */}

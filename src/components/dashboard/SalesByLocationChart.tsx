@@ -1,6 +1,4 @@
 'use client';
-
-import { useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -30,13 +28,6 @@ const COLORS = [
 ];
 
 export function SalesByLocationChart({ data, loading = false }: SalesByLocationChartProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[SalesByLocationChart] Received data:', data);
-    }
-  }, [data]);
-
   if (loading) {
     return (
       <Card>
@@ -122,7 +113,7 @@ export function SalesByLocationChart({ data, loading = false }: SalesByLocationC
                 return null;
               }}
             />
-            <Bar dataKey="revenue" radius={[0, 4, 4, 0]}>
+            <Bar dataKey="revenue" radius={[0, 4, 4, 0]} isAnimationActive={false}>
               {chartData.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}

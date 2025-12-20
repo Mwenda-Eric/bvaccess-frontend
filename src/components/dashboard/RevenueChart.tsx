@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   AreaChart,
   Area,
@@ -31,13 +31,6 @@ export function RevenueChart({
   selectedPeriod = '7d',
 }: RevenueChartProps) {
   const [showComparison, setShowComparison] = useState(false);
-
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[RevenueChart] Received data:', data);
-    }
-  }, [data]);
 
   if (loading) {
     return (
@@ -167,6 +160,7 @@ export function RevenueChart({
                 fillOpacity={1}
                 fill="url(#colorPrevious)"
                 strokeDasharray="5 5"
+                isAnimationActive={false}
               />
             )}
             <Area
@@ -176,6 +170,7 @@ export function RevenueChart({
               fillOpacity={1}
               fill="url(#colorRevenue)"
               strokeWidth={2}
+              isAnimationActive={false}
             />
           </AreaChart>
         </ResponsiveContainer>

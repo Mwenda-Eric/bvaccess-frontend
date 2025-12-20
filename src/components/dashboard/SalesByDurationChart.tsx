@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,13 +19,6 @@ const COLORS = [
 ];
 
 export function SalesByDurationChart({ data, loading = false }: SalesByDurationChartProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[SalesByDurationChart] Received data:', data);
-    }
-  }, [data]);
-
   if (loading) {
     return (
       <Card>
@@ -84,6 +76,7 @@ export function SalesByDurationChart({ data, loading = false }: SalesByDurationC
               outerRadius={80}
               paddingAngle={5}
               dataKey="value"
+              isAnimationActive={false}
             >
               {chartData.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -12,13 +11,6 @@ interface HourlyHeatmapProps {
 }
 
 export function HourlyHeatmap({ data, loading = false }: HourlyHeatmapProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[HourlyHeatmap] Received data:', data);
-    }
-  }, [data]);
-
   if (loading) {
     return (
       <Card>

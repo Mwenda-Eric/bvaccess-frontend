@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,14 +23,6 @@ interface RecentVouchersTableProps {
 }
 
 export function RecentVouchersTable({ data, loading = false }: RecentVouchersTableProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[RecentVouchersTable] Received data:', data);
-    }
-  }, [data]);
-
-  // Safely handle data
   const vouchers = data || [];
 
   if (loading) {

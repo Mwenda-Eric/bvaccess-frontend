@@ -1,23 +1,16 @@
 'use client';
 
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { dashboardApi } from '@/lib/api';
 import { ChartPeriod } from '@/types';
-
-// Auto-refresh interval in milliseconds
-// Using 10 seconds to balance freshness vs Azure costs
-const REFRESH_INTERVAL = 10 * 1000;
-const SUMMARY_REFRESH_INTERVAL = 5 * 1000; // Slightly faster for key stats
+import { useCallback } from 'react';
 
 export function useDashboardSummary() {
   return useQuery({
     queryKey: ['dashboard', 'summary'],
     queryFn: () => dashboardApi.getSummary(),
     placeholderData: keepPreviousData,
-    refetchInterval: SUMMARY_REFRESH_INTERVAL,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -26,8 +19,7 @@ export function useRevenueChart(period: ChartPeriod = '7d') {
     queryKey: ['dashboard', 'revenue', period],
     queryFn: () => dashboardApi.getRevenueChart(period),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -36,8 +28,7 @@ export function useSalesByLocation(period: ChartPeriod = '7d') {
     queryKey: ['dashboard', 'location', period],
     queryFn: () => dashboardApi.getSalesByLocation(period),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -46,8 +37,7 @@ export function useSalesByDuration(period: ChartPeriod = '7d') {
     queryKey: ['dashboard', 'duration', period],
     queryFn: () => dashboardApi.getSalesByDuration(period),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -56,8 +46,7 @@ export function usePaymentMethods(period: ChartPeriod = '7d') {
     queryKey: ['dashboard', 'payment-methods', period],
     queryFn: () => dashboardApi.getPaymentMethods(period),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -66,8 +55,7 @@ export function useHourlyHeatmap(period: ChartPeriod = '7d') {
     queryKey: ['dashboard', 'hourly-heatmap', period],
     queryFn: () => dashboardApi.getHourlyHeatmap(period),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -76,8 +64,7 @@ export function useTopOperators(limit: number = 5) {
     queryKey: ['dashboard', 'top-operators', limit],
     queryFn: () => dashboardApi.getTopOperators(limit),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -86,8 +73,7 @@ export function useRecentVouchers(limit: number = 10) {
     queryKey: ['dashboard', 'recent-vouchers', limit],
     queryFn: () => dashboardApi.getRecentVouchers(limit),
     placeholderData: keepPreviousData,
-    refetchInterval: REFRESH_INTERVAL,
-    staleTime: 0,
+    staleTime: 30 * 1000,
   });
 }
 
@@ -96,8 +82,17 @@ export function useActiveOperators() {
     queryKey: ['dashboard', 'active-operators'],
     queryFn: () => dashboardApi.getActiveOperators(),
     placeholderData: keepPreviousData,
-    refetchInterval: SUMMARY_REFRESH_INTERVAL,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: 30 * 1000,
   });
+}
+
+// Hook to refresh all dashboard data
+export function useRefreshDashboard() {
+  const queryClient = useQueryClient();
+
+  const refresh = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+  }, [queryClient]);
+
+  return refresh;
 }

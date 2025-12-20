@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
@@ -31,13 +30,6 @@ const RankIcon = ({ rank }: { rank: number }) => {
 };
 
 export function TopOperatorsTable({ data, loading = false }: TopOperatorsTableProps) {
-  // Debug logging
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[TopOperatorsTable] Received data:', data);
-    }
-  }, [data]);
-
   if (loading) {
     return (
       <Card>
