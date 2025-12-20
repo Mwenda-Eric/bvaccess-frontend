@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { dashboardApi } from '@/lib/api';
 import { ChartPeriod } from '@/types';
 
@@ -13,9 +13,9 @@ export function useDashboardSummary() {
   return useQuery({
     queryKey: ['dashboard', 'summary'],
     queryFn: () => dashboardApi.getSummary(),
+    placeholderData: keepPreviousData,
     refetchInterval: SUMMARY_REFRESH_INTERVAL,
     staleTime: 0,
-    gcTime: 0, // Don't cache old data
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
   });
@@ -25,6 +25,7 @@ export function useRevenueChart(period: ChartPeriod = '7d') {
   return useQuery({
     queryKey: ['dashboard', 'revenue', period],
     queryFn: () => dashboardApi.getRevenueChart(period),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -34,6 +35,7 @@ export function useSalesByLocation(period: ChartPeriod = '7d') {
   return useQuery({
     queryKey: ['dashboard', 'location', period],
     queryFn: () => dashboardApi.getSalesByLocation(period),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -43,6 +45,7 @@ export function useSalesByDuration(period: ChartPeriod = '7d') {
   return useQuery({
     queryKey: ['dashboard', 'duration', period],
     queryFn: () => dashboardApi.getSalesByDuration(period),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -52,6 +55,7 @@ export function usePaymentMethods(period: ChartPeriod = '7d') {
   return useQuery({
     queryKey: ['dashboard', 'payment-methods', period],
     queryFn: () => dashboardApi.getPaymentMethods(period),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -61,6 +65,7 @@ export function useHourlyHeatmap(period: ChartPeriod = '7d') {
   return useQuery({
     queryKey: ['dashboard', 'hourly-heatmap', period],
     queryFn: () => dashboardApi.getHourlyHeatmap(period),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -70,6 +75,7 @@ export function useTopOperators(limit: number = 5) {
   return useQuery({
     queryKey: ['dashboard', 'top-operators', limit],
     queryFn: () => dashboardApi.getTopOperators(limit),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -79,6 +85,7 @@ export function useRecentVouchers(limit: number = 10) {
   return useQuery({
     queryKey: ['dashboard', 'recent-vouchers', limit],
     queryFn: () => dashboardApi.getRecentVouchers(limit),
+    placeholderData: keepPreviousData,
     refetchInterval: REFRESH_INTERVAL,
     staleTime: 0,
   });
@@ -88,9 +95,9 @@ export function useActiveOperators() {
   return useQuery({
     queryKey: ['dashboard', 'active-operators'],
     queryFn: () => dashboardApi.getActiveOperators(),
+    placeholderData: keepPreviousData,
     refetchInterval: SUMMARY_REFRESH_INTERVAL,
     staleTime: 0,
-    gcTime: 0,
     refetchOnWindowFocus: true,
   });
 }
