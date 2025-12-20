@@ -4,6 +4,34 @@ import { getSession, signOut } from 'next-auth/react';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
+/**
+ * Convert PascalCase keys to camelCase (for .NET backend compatibility)
+ */
+function toCamelCase(str: string): string {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+function convertKeysToCamelCase<T>(obj: unknown): T {
+  if (obj === null || obj === undefined) {
+    return obj as T;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => convertKeysToCamelCase(item)) as T;
+  }
+
+  if (typeof obj === 'object' && obj !== null) {
+    const converted: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      const camelKey = toCamelCase(key);
+      converted[camelKey] = convertKeysToCamelCase(value);
+    }
+    return converted as T;
+  }
+
+  return obj as T;
+}
+
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -38,12 +66,17 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor - handle errors
+// Response interceptor - handle errors and convert PascalCase to camelCase
 apiClient.interceptors.response.use(
   (response) => {
+    // Convert PascalCase keys to camelCase for .NET backend compatibility
+    if (response.data) {
+      response.data = convertKeysToCamelCase(response.data);
+    }
+
     // Log responses in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[API] Response:`, response.data);
+      console.log(`[API] Response (converted to camelCase):`, response.data);
     }
     return response;
   },

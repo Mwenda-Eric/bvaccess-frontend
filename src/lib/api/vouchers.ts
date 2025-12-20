@@ -16,11 +16,15 @@ export const vouchersApi = {
   ): Promise<PaginatedResponse<Voucher>> => {
     console.log('[Vouchers API] Fetching vouchers with params:', params);
     const result = await get<PaginatedResponse<Voucher>>('/admin/vouchers', params as Record<string, unknown>);
+    console.log('[Vouchers API] Raw result object:', result);
+    console.log('[Vouchers API] Result keys:', Object.keys(result || {}));
     console.log('[Vouchers API] Vouchers response:', {
-      totalCount: result.pagination?.totalCount,
-      itemCount: result.items?.length,
-      firstItem: result.items?.[0],
-      pagination: result.pagination,
+      hasItems: 'items' in (result || {}),
+      hasPagination: 'pagination' in (result || {}),
+      totalCount: result?.pagination?.totalCount,
+      itemCount: result?.items?.length,
+      firstItem: result?.items?.[0],
+      pagination: result?.pagination,
     });
     return result;
   },
