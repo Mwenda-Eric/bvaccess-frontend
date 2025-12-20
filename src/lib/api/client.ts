@@ -5,10 +5,17 @@ import { getSession, signOut } from 'next-auth/react';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 /**
- * Convert PascalCase keys to camelCase (for .NET backend compatibility)
+ * Convert PascalCase keys to camelCase (for .NET backend responses)
  */
 function toCamelCase(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+/**
+ * Convert camelCase keys to PascalCase (for .NET backend requests)
+ */
+function toPascalCase(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function convertKeysToCamelCase<T>(obj: unknown): T {
@@ -32,6 +39,17 @@ function convertKeysToCamelCase<T>(obj: unknown): T {
   return obj as T;
 }
 
+function convertKeysToPascalCase(obj: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+  if (!obj) return obj;
+
+  const converted: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const pascalKey = toPascalCase(key);
+    converted[pascalKey] = value;
+  }
+  return converted;
+}
+
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -41,7 +59,7 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor - attach token
+// Request interceptor - attach token and convert params to PascalCase
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     // Get token from NextAuth session
@@ -49,6 +67,11 @@ apiClient.interceptors.request.use(
 
     if (session?.accessToken) {
       config.headers.Authorization = `Bearer ${session.accessToken}`;
+    }
+
+    // Convert query params to PascalCase for .NET backend
+    if (config.params) {
+      config.params = convertKeysToPascalCase(config.params as Record<string, unknown>);
     }
 
     // Log requests in development
