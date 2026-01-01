@@ -14,7 +14,7 @@ export function useDashboardSummary() {
   });
 }
 
-export function useRevenueChart(period: ChartPeriod = '7d') {
+export function useRevenueChart(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'revenue', period],
     queryFn: () => dashboardApi.getRevenueChart(period),
@@ -23,7 +23,7 @@ export function useRevenueChart(period: ChartPeriod = '7d') {
   });
 }
 
-export function useSalesByLocation(period: ChartPeriod = '7d') {
+export function useSalesByLocation(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'location', period],
     queryFn: () => dashboardApi.getSalesByLocation(period),
@@ -32,7 +32,7 @@ export function useSalesByLocation(period: ChartPeriod = '7d') {
   });
 }
 
-export function useSalesByDuration(period: ChartPeriod = '7d') {
+export function useSalesByDuration(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'duration', period],
     queryFn: () => dashboardApi.getSalesByDuration(period),
@@ -41,7 +41,7 @@ export function useSalesByDuration(period: ChartPeriod = '7d') {
   });
 }
 
-export function usePaymentMethods(period: ChartPeriod = '7d') {
+export function usePaymentMethods(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'payment-methods', period],
     queryFn: () => dashboardApi.getPaymentMethods(period),
@@ -50,7 +50,7 @@ export function usePaymentMethods(period: ChartPeriod = '7d') {
   });
 }
 
-export function useHourlyHeatmap(period: ChartPeriod = '7d') {
+export function useHourlyHeatmap(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'hourly-heatmap', period],
     queryFn: () => dashboardApi.getHourlyHeatmap(period),

@@ -21,7 +21,7 @@ const mapPeriodToBackend = (period: ChartPeriod): string => {
     '90d': '90days',
     '12m': '12months',
   };
-  return periodMap[period] || '7days';
+  return periodMap[period] || '12months';
 };
 
 export const dashboardApi = {
@@ -35,7 +35,7 @@ export const dashboardApi = {
   },
 
   // Get revenue chart data
-  getRevenueChart: async (period: ChartPeriod = '7d'): Promise<RevenueChartData> => {
+  getRevenueChart: async (period: ChartPeriod = '12m'): Promise<RevenueChartData> => {
     const data = await get<RevenueChartData>('/admin/dashboard/charts/revenue', {
       period: mapPeriodToBackend(period)
     });
@@ -52,35 +52,35 @@ export const dashboardApi = {
   },
 
   // Get sales by location
-  getSalesByLocation: async (period: ChartPeriod = '7d'): Promise<SalesByLocationData> => {
+  getSalesByLocation: async (period: ChartPeriod = '12m'): Promise<SalesByLocationData> => {
     return get<SalesByLocationData>('/admin/dashboard/charts/sales-by-location', {
       period: mapPeriodToBackend(period)
     });
   },
 
   // Get sales by duration
-  getSalesByDuration: async (period: ChartPeriod = '7d'): Promise<SalesByDurationData> => {
+  getSalesByDuration: async (period: ChartPeriod = '12m'): Promise<SalesByDurationData> => {
     return get<SalesByDurationData>('/admin/dashboard/charts/sales-by-duration', {
       period: mapPeriodToBackend(period)
     });
   },
 
   // Get payment methods distribution
-  getPaymentMethods: async (period: ChartPeriod = '7d'): Promise<PaymentMethodsData> => {
+  getPaymentMethods: async (period: ChartPeriod = '12m'): Promise<PaymentMethodsData> => {
     return get<PaymentMethodsData>('/admin/dashboard/charts/payment-methods', {
       period: mapPeriodToBackend(period)
     });
   },
 
   // Get hourly distribution data (heatmap)
-  getHourlyHeatmap: async (period: ChartPeriod = '7d'): Promise<HourlyHeatmapData> => {
+  getHourlyHeatmap: async (period: ChartPeriod = '12m'): Promise<HourlyHeatmapData> => {
     return get<HourlyHeatmapData>('/admin/dashboard/hourly-distribution', {
       period: mapPeriodToBackend(period)
     });
   },
 
   // Get top operators
-  getTopOperators: async (limit: number = 5, period: ChartPeriod = '7d'): Promise<TopOperator[]> => {
+  getTopOperators: async (limit: number = 5, period: ChartPeriod = '12m'): Promise<TopOperator[]> => {
     return get<TopOperator[]>('/admin/dashboard/top-operators', {
       limit,
       period: mapPeriodToBackend(period)

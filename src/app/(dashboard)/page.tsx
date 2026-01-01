@@ -37,7 +37,7 @@ import { ChartPeriod } from '@/types';
 
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
-  const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('7d');
+  const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('12m');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshDashboard = useRefreshDashboard();
 
