@@ -1,5 +1,6 @@
 import {
   DashboardSummary,
+  PeriodSummary,
   RevenueChartData,
   SalesByLocationData,
   SalesByDurationData,
@@ -30,6 +31,16 @@ export const dashboardApi = {
     const data = await get<DashboardSummary>('/admin/dashboard/summary');
     if (process.env.NODE_ENV === 'development') {
       console.log('[Dashboard API] Summary response:', data);
+    }
+    return data;
+  },
+
+  // Get summary stats for a specific period
+  getSummaryByPeriod: async (period: ChartPeriod = '12m'): Promise<PeriodSummary> => {
+    const backendPeriod = mapPeriodToBackend(period);
+    const data = await get<PeriodSummary>(`/admin/dashboard/summary/${backendPeriod}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Dashboard API] Period summary response:', data);
     }
     return data;
   },

@@ -14,6 +14,15 @@ export function useDashboardSummary() {
   });
 }
 
+export function usePeriodSummary(period: ChartPeriod = '12m') {
+  return useQuery({
+    queryKey: ['dashboard', 'period-summary', period],
+    queryFn: () => dashboardApi.getSummaryByPeriod(period),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
+  });
+}
+
 export function useRevenueChart(period: ChartPeriod = '12m') {
   return useQuery({
     queryKey: ['dashboard', 'revenue', period],

@@ -21,7 +21,7 @@ import {
   HourlyHeatmap,
 } from '@/components/dashboard';
 import {
-  useDashboardSummary,
+  usePeriodSummary,
   useRevenueChart,
   useSalesByLocation,
   useSalesByDuration,
@@ -42,7 +42,7 @@ export default function DashboardPage() {
   const refreshDashboard = useRefreshDashboard();
 
   // Fetch dashboard data
-  const { data: summary, isLoading: summaryLoading, isFetching: summaryFetching } = useDashboardSummary();
+  const { data: periodSummary, isLoading: summaryLoading, isFetching: summaryFetching } = usePeriodSummary(chartPeriod);
   const { data: revenueChart, isLoading: revenueLoading } = useRevenueChart(chartPeriod);
   const { data: locationData, isLoading: locationLoading } = useSalesByLocation(chartPeriod);
   const { data: durationData, isLoading: durationLoading } = useSalesByDuration(chartPeriod);
@@ -88,15 +88,15 @@ export default function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title={t('totalRevenue')}
-          value={formatCurrency(summary?.today.totalRevenue || 0)}
+          value={formatCurrency(periodSummary?.currentPeriod.totalRevenue || 0)}
           change={
-            summary?.percentageChanges
+            periodSummary
               ? {
-                  value: summary.percentageChanges.revenueToday,
+                  value: periodSummary.revenueChange,
                   type:
-                    summary.percentageChanges.revenueToday > 0
+                    periodSummary.revenueChange > 0
                       ? 'increase'
-                      : summary.percentageChanges.revenueToday < 0
+                      : periodSummary.revenueChange < 0
                       ? 'decrease'
                       : 'neutral',
                 }
@@ -106,16 +106,16 @@ export default function DashboardPage() {
           loading={summaryLoading}
         />
         <StatCard
-          title={t('todaySales')}
-          value={summary?.today.totalSales?.toLocaleString() || '0'}
+          title={t('totalSales')}
+          value={periodSummary?.currentPeriod.totalSales?.toLocaleString() || '0'}
           change={
-            summary?.percentageChanges
+            periodSummary
               ? {
-                  value: summary.percentageChanges.salesToday,
+                  value: periodSummary.salesChange,
                   type:
-                    summary.percentageChanges.salesToday > 0
+                    periodSummary.salesChange > 0
                       ? 'increase'
-                      : summary.percentageChanges.salesToday < 0
+                      : periodSummary.salesChange < 0
                       ? 'decrease'
                       : 'neutral',
                 }
@@ -131,21 +131,8 @@ export default function DashboardPage() {
           loading={activeOpsLoading}
         />
         <StatCard
-          title={t('thisWeek')}
-          value={formatCurrency(summary?.thisWeek.totalRevenue || 0)}
-          change={
-            summary?.percentageChanges
-              ? {
-                  value: summary.percentageChanges.revenueWeek,
-                  type:
-                    summary.percentageChanges.revenueWeek > 0
-                      ? 'increase'
-                      : summary.percentageChanges.revenueWeek < 0
-                      ? 'decrease'
-                      : 'neutral',
-                }
-              : undefined
-          }
+          title={t('averageTicket')}
+          value={formatCurrency(periodSummary?.currentPeriod.averageTicket || 0)}
           icon={<TrendingUp className="h-6 w-6 text-primary" />}
           loading={summaryLoading}
         />

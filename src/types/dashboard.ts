@@ -116,6 +116,15 @@ export interface ActiveOperatorsCount {
   total: number;
 }
 
+export interface PeriodSummary {
+  period: string;
+  periodLabel: string;
+  currentPeriod: PeriodStats;
+  previousPeriod: PeriodStats;
+  salesChange: number;
+  revenueChange: number;
+}
+
 export type ChartPeriod = '7d' | '30d' | '90d' | '12m';
 
 export interface SparklineData {
