@@ -120,7 +120,7 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
+                  placeholder="Enter the password"
                   autoComplete="current-password"
                   disabled={isLoading}
                   {...register('password')}
