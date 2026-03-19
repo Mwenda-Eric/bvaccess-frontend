@@ -5,3 +5,4 @@ export * from './useVouchers';
 export * from './useOperators';
 export * from './useLocations';
 export * from './useReports';
+export * from './usePlans';

@@ -6,3 +6,4 @@ export { dashboardApi } from './dashboard';
 export { operatorsApi } from './operators';
 export { locationsApi } from './locations';
 export { reportsApi } from './reports';
+export { plansApi, wifiCodesApi } from './plans';

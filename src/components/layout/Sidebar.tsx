@@ -14,6 +14,7 @@ import {
   MapPin,
   Shield,
   Settings,
+  CreditCard,
   ChevronLeft,
   Wifi,
 } from 'lucide-react';
@@ -34,6 +35,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   MapPin,
   Shield,
   Settings,
+  CreditCard,
 };
 
 // Map nav item titles to translation keys
@@ -44,6 +46,7 @@ const titleToTranslationKey: Record<string, string> = {
   Operators: 'operators',
   Locations: 'locations',
   'Admin Users': 'admins',
+  Plans: 'plans',
   Settings: 'settings',
 };
 

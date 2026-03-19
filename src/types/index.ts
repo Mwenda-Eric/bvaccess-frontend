@@ -6,3 +6,4 @@ export * from './operator';
 export * from './location';
 export * from './dashboard';
 export * from './report';
+export * from './plan';

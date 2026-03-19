@@ -57,12 +57,13 @@ export const STATUS_COLORS = {
   },
 };
 
-// Duration options (in minutes)
+// Duration options (in minutes) — Plan A pricing
 export const DURATION_OPTIONS = [
+  { value: 10, label: '10 minutes' },
   { value: 30, label: '30 minutes' },
   { value: 60, label: '1 hour' },
-  { value: 120, label: '2 hours' },
-  { value: 1440, label: '24 hours' },
+  { value: 180, label: '3 hours' },
+  { value: 720, label: '12 hours' },
 ];
 
 // Payment methods
@@ -123,6 +124,12 @@ export const NAV_ITEMS = [
     title: 'Locations',
     href: '/locations',
     icon: 'MapPin',
+    roles: ['SuperAdmin', 'Admin'],
+  },
+  {
+    title: 'Plans',
+    href: '/plans',
+    icon: 'CreditCard',
     roles: ['SuperAdmin', 'Admin'],
   },
   {
