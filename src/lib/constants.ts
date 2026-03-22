@@ -103,6 +103,12 @@ export const NAV_ITEMS = [
     roles: ['SuperAdmin', 'Admin', 'Viewer'],
   },
   {
+    title: 'WiFi Codes',
+    href: '/plans/wifi-codes',
+    icon: 'Wifi',
+    roles: ['SuperAdmin', 'Admin'],
+  },
+  {
     title: 'Vouchers',
     href: '/vouchers',
     icon: 'Ticket',

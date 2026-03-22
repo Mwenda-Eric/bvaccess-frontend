@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { NAV_ITEMS } from '@/lib/constants';
 import {
   LayoutDashboard,
+  Wifi,
   Ticket,
   BarChart3,
   Users,
@@ -16,7 +17,6 @@ import {
   Settings,
   CreditCard,
   ChevronLeft,
-  Wifi,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -29,6 +29,7 @@ import {
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
+  Wifi,
   Ticket,
   BarChart3,
   Users,
@@ -41,6 +42,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 // Map nav item titles to translation keys
 const titleToTranslationKey: Record<string, string> = {
   Dashboard: 'dashboard',
+  'WiFi Codes': 'wifiCodes',
   Vouchers: 'vouchers',
   Reports: 'reports',
   Operators: 'operators',
