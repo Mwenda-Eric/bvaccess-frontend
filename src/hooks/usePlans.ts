@@ -78,6 +78,28 @@ export function useDeletePlan() {
   });
 }
 
+export function usePlanGroups() {
+  return useQuery({
+    queryKey: ['plans', 'groups'],
+    queryFn: () => plansApi.getGroups(),
+  });
+}
+
+export function useActivatePlanGroup() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (planName: string) => plansApi.activateGroup(planName),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['plans'] });
+      toast.success(result.message);
+    },
+    onError: (error: unknown) => {
+      toast.error(formatApiError(error));
+    },
+  });
+}
+
 // ---- WiFi Code hooks ----
 
 export function useWifiCodes(params?: PaginationParams & WifiCodeFilters) {

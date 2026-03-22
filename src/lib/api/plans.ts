@@ -1,5 +1,6 @@
 import {
   Plan,
+  PlanGroup,
   WifiCode,
   PlanFilters,
   WifiCodeFilters,
@@ -16,6 +17,14 @@ import { get, post, postWithResult, putWithResult, delWithResult } from './clien
 export const plansApi = {
   getAll: async (filters?: PlanFilters): Promise<Plan[]> => {
     return get<Plan[]>('/admin/plans', filters as Record<string, unknown>);
+  },
+
+  getGroups: async (): Promise<PlanGroup[]> => {
+    return get<PlanGroup[]>('/admin/plans/groups');
+  },
+
+  activateGroup: async (planName: string): Promise<OperationResult> => {
+    return putWithResult(`/admin/plans/activate-group/${encodeURIComponent(planName)}`);
   },
 
   getById: async (id: string): Promise<Plan> => {

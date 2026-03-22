@@ -64,3 +64,10 @@ export interface GenerateWifiCodesResponse {
   generatedCount: number;
   planTierName: string;
 }
+
+export interface PlanGroup {
+  planName: string;
+  tierCount: number;
+  activeTierCount: number;
+  isActive: boolean;
+}

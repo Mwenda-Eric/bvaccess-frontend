@@ -14,7 +14,10 @@ import {
   Trash,
   Wifi,
   Clock,
+  CheckCircle,
+  Zap,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,6 +56,7 @@ import {
   useCreatePlan,
   useUpdatePlan,
   useDeletePlan,
+  useActivatePlanGroup,
 } from '@/hooks';
 import { Plan } from '@/types';
 
@@ -84,11 +88,16 @@ export default function PlansPage() {
     plan: Plan | null;
     action: 'toggle' | 'delete';
   }>({ open: false, plan: null, action: 'toggle' });
+  const [activateDialog, setActivateDialog] = useState<{
+    open: boolean;
+    planName: string;
+  }>({ open: false, planName: '' });
 
   const { data: plans, isLoading } = usePlans();
   const createPlan = useCreatePlan();
   const updatePlan = useUpdatePlan();
   const deletePlan = useDeletePlan();
+  const activateGroup = useActivatePlanGroup();
 
   const {
     register: registerCreate,
@@ -230,89 +239,117 @@ export default function PlansPage() {
       </div>
 
       {/* Plan Groups */}
-      {Object.entries(groupedPlans).map(([planName, tiers]) => (
-        <Card key={planName}>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <CreditCard className="h-5 w-5 text-primary" />
+      {Object.entries(groupedPlans).map(([planName, tiers]) => {
+        const isGroupActive = tiers.some((t) => t.isActive);
+
+        return (
+          <Card key={planName} className={isGroupActive ? 'border-primary/50' : ''}>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                    isGroupActive ? 'bg-primary/10' : 'bg-muted'
+                  }`}>
+                    <CreditCard className={`h-5 w-5 ${isGroupActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <CardTitle>{planName}</CardTitle>
+                      {isGroupActive ? (
+                        <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                          <CheckCircle className="mr-1 h-3 w-3" />
+                          Active
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">Inactive</Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {tiers.length} tier{tiers.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+                {!isGroupActive && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setActivateDialog({ open: true, planName })}
+                  >
+                    <Zap className="mr-2 h-3.5 w-3.5" />
+                    Set as Active
+                  </Button>
+                )}
               </div>
-              <div>
-                <CardTitle>{planName}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {tiers.length} tier{tiers.length !== 1 ? 's' : ''}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Price (HTG)</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Order</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {tiers.map((plan) => (
-                  <TableRow key={plan.id}>
-                    <TableCell className="font-medium">{plan.name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                        {formatDuration(plan.durationMinutes)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <CurrencyDisplay amount={plan.price} size="sm" />
-                    </TableCell>
-                    <TableCell>
-                      <ActiveStatusBadge isActive={plan.isActive} size="sm" />
-                    </TableCell>
-                    <TableCell>{plan.sortOrder}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(plan)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              setConfirmDialog({ open: true, plan, action: 'toggle' })
-                            }
-                          >
-                            <Power className="mr-2 h-4 w-4" />
-                            {plan.isActive ? 'Deactivate' : 'Activate'}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            onClick={() =>
-                              setConfirmDialog({ open: true, plan, action: 'delete' })
-                            }
-                          >
-                            <Trash className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead>Price (HTG)</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Order</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ))}
+                </TableHeader>
+                <TableBody>
+                  {tiers.map((plan) => (
+                    <TableRow key={plan.id}>
+                      <TableCell className="font-medium">{plan.name}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                          {formatDuration(plan.durationMinutes)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay amount={plan.price} size="sm" />
+                      </TableCell>
+                      <TableCell>
+                        <ActiveStatusBadge isActive={plan.isActive} size="sm" />
+                      </TableCell>
+                      <TableCell>{plan.sortOrder}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEdit(plan)}>
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                setConfirmDialog({ open: true, plan, action: 'toggle' })
+                              }
+                            >
+                              <Power className="mr-2 h-4 w-4" />
+                              {plan.isActive ? 'Deactivate' : 'Activate'}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onClick={() =>
+                                setConfirmDialog({ open: true, plan, action: 'delete' })
+                              }
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        );
+      })}
 
       {(!plans || plans.length === 0) && (
         <Card className="py-12">
@@ -484,7 +521,7 @@ export default function PlansPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Confirm Dialog */}
+      {/* Confirm Dialog (toggle/delete tier) */}
       <ConfirmDialog
         open={confirmDialog.open}
         onOpenChange={(open) => setConfirmDialog({ ...confirmDialog, open })}
@@ -497,7 +534,7 @@ export default function PlansPage() {
         }
         description={
           confirmDialog.action === 'delete'
-            ? `Are you sure you want to delete "${confirmDialog.plan?.name}"? This will deactivate the tier.`
+            ? `Are you sure you want to permanently delete "${confirmDialog.plan?.name}"? This cannot be undone. WiFi codes linked to this tier must be deleted first.`
             : confirmDialog.plan?.isActive
             ? `Are you sure you want to deactivate "${confirmDialog.plan?.name}"?`
             : `Are you sure you want to activate "${confirmDialog.plan?.name}"?`
@@ -506,6 +543,22 @@ export default function PlansPage() {
         onConfirm={handleConfirm}
         isLoading={updatePlan.isPending || deletePlan.isPending}
         variant={confirmDialog.action === 'delete' ? 'destructive' : 'default'}
+      />
+
+      {/* Activate Group Dialog */}
+      <ConfirmDialog
+        open={activateDialog.open}
+        onOpenChange={(open) => setActivateDialog({ ...activateDialog, open })}
+        title={`Activate ${activateDialog.planName}`}
+        description={`This will set "${activateDialog.planName}" as the active plan. All other plan groups will be deactivated. The Android app will show only this plan's tiers.`}
+        confirmLabel="Activate"
+        onConfirm={() => {
+          activateGroup.mutate(activateDialog.planName, {
+            onSuccess: () => setActivateDialog({ open: false, planName: '' }),
+          });
+        }}
+        isLoading={activateGroup.isPending}
+        variant="default"
       />
     </div>
   );
